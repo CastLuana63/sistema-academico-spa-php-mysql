@@ -1,0 +1,25 @@
+<?php
+
+require_once '../conexaobd.php';
+
+try {
+
+    $stmt = $pdo->query('
+        SELECT a.IDALUNO, a.NOME, a.IDCURSO, c.NOME as CURSO_NOME
+        FROM aluno a
+        LEFT JOIN curso c ON a.IDCURSO = c.IDCURSO
+        ORDER BY a.NOME
+    ');
+
+    $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    header('Content-Type: application/json');
+    echo json_encode($alunos);
+
+} catch (Exception $e) {
+    header('Content-Type: application/json');
+    echo json_encode([
+        'status' => 'error',
+        'mensagem' => 'Erro ao listar alunos: ' . $e->getMessage()
+    ]);
+}
